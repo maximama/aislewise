@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aislewise — Grocery list</title><style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#303b42;background:#f3f5f6}
+*{box-sizing:border-box}body{margin:0}header{background:#00a1df;color:#fff;padding:19px max(20px,calc((100vw - 900px)/2));border-bottom:5px solid #0089c5}
+header h1{font-size:34px;letter-spacing:-1.5px;margin:0;font-weight:800}header small{font-size:13px;opacity:.98}
+main{max-width:900px;margin:0 auto;padding:18px 15px 45px}
+.tabs{display:flex;gap:0;background:#fff;border:1px solid #dce3e7;border-radius:5px;overflow:hidden;margin-bottom:17px}
+button{border:0;border-radius:4px;padding:12px 17px;background:#00a1df;color:#fff;font-weight:700;cursor:pointer;font-size:14px}
+button:hover{filter:brightness(.96)}button.secondary{background:#e7f5fb;color:#007db2}
+.tabs button{flex:1;border-radius:0;background:#fff;color:#4c606d;border-bottom:4px solid transparent;padding:14px 5px}
+.tabs button:not(.secondary){color:#008dca;border-bottom-color:#00a1df;background:#f0faff}
+.panel{background:#fff;border:1px solid #dce3e7;border-radius:5px;padding:21px;margin-bottom:14px;box-shadow:0 2px 4px #1a52620a}
+h2{font-size:21px;letter-spacing:-.5px;margin:0 0 14px;color:#273a45}
+h3{font-size:15px;color:#008ec7;margin:0 0 7px}
+p{color:#6b7d88;line-height:1.5;font-size:14px}
+textarea,input,select{width:100%;border:1px solid #c9d6dc;border-radius:3px;padding:12px;font:inherit;background:#fff;color:#303b42}
+textarea:focus,input:focus,select:focus{outline:2px solid #8ddcf8;border-color:#00a1df}
+textarea{min-height:120px;resize:vertical}.row{display:flex;gap:10px;align-items:center}.row>*{min-width:0}.row input{flex:1}
+.muted{font-size:12px;color:#84939c}.section{border-top:1px solid #dbe7ed;padding-top:15px;margin-top:17px}
+.item{display:flex;gap:12px;align-items:center;padding:13px 4px;border-bottom:1px solid #edf1f3;font-size:16px}
+.item input[type=checkbox]{width:24px;height:24px;accent-color:#00a1df;flex-shrink:0}
+.item .name{flex:1}.done{text-decoration:line-through;opacity:.42}
+.pill{font-size:12px;border-radius:4px;padding:4px 8px;background:#e7f6fc;color:#0086bd}
+.previewrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #edf1f3}.previewrow span:first-child{min-width:0;overflow-wrap:anywhere}.item button{padding:5px 11px;background:#f1f4f6;color:#81929b;font-size:18px}
+.layoutrow{display:grid;grid-template-columns:1fr 105px;gap:12px;align-items:center;margin:8px 0;padding:5px 0;border-bottom:1px solid #f1f4f6}
+.layoutrow input{padding:8px}.status{font-weight:700;color:#00a1df}
+#shop,#layout{display:none}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+#empty{padding:20px;color:#698072;text-align:center}
+.notice{background:#edf8fd;border-left:4px solid #00a1df;padding:13px;border-radius:2px;font-size:13px;color:#537485}
+#progress{font-size:14px;font-weight:700;color:#0089c5}
+.storepicker{max-width:400px;margin-top:16px}.storepicker label{display:block;font-size:11px;letter-spacing:1.5px;font-weight:800;margin-bottom:6px}.storepicker select{font-size:16px;font-weight:700;border:2px solid #fff;background:#fff;color:#126b92;padding:11px}.locationhint{font-size:12px;color:#7d8e97;margin-left:8px}.warning{color:#a5660d;font-size:12px}.location-table{font-size:13px;line-height:1.9;margin-bottom:15px}.location-table strong{color:#008ec7}#route .section{position:relative}#route h3{background:#e8f7fd;padding:11px 13px;border-left:4px solid #00a1df;border-radius:2px;color:#007eae}
+.brand{display:flex;align-items:center;gap:11px}.brandmark{width:42px;height:42px;flex:none}.brandname{font-size:30px;font-weight:800;letter-spacing:-1.5px;line-height:1}.storepicker{margin-top:13px;max-width:330px}.storepicker label{letter-spacing:.5px;font-size:11px;margin-bottom:5px}.storepicker select{border:0;border-radius:7px;padding:10px 13px;font-size:14px}.panel{border-radius:9px;padding:19px}.tabs{border-radius:9px}.paste-panel textarea{min-height:145px;border-radius:8px;line-height:1.6}.paste-panel .actions{margin-top:10px}.paste-panel .actions button{width:100%}h2{font-size:18px;margin-bottom:12px}header{padding-top:17px;padding-bottom:17px}#plan .panel:first-child{max-width:100%}
+@media(min-width:760px){#plan{display:block}#plan .panel:nth-child(1){max-width:100%}}
+@media(max-width:480px){header{padding:17px 18px}header h1{font-size:30px}.panel{padding:16px}.tabs button{font-size:12px;padding:12px 3px}.actions button{flex-grow:1}}
+
+/* v2.7: compact single-row masthead */
+header{padding:13px 20px}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px}
+.brand{display:flex;align-items:center;justify-content:center;flex:none;width:48px;height:48px}
+.cartmark{font-size:37px;line-height:1;display:block}
+.storepicker{margin:0;max-width:none;min-width:0;display:flex;align-items:center;position:relative;height:48px;border:1px solid #ffffff70;border-radius:11px;background:#ffffff1c;color:#fff}
+.storepicker .store-icon{display:flex;align-items:center;padding-left:12px;pointer-events:none}
+.storepicker select{appearance:none;-webkit-appearance:none;margin:0;width:auto;min-width:0;max-width:220px;height:46px;background:transparent;color:#fff;border:0;outline-offset:2px;border-radius:11px;padding:0 31px 0 9px;font-size:14px;font-weight:700;cursor:pointer}
+.storepicker select option{color:#263d4b;background:#fff}
+.store-chevron{position:absolute;right:9px;pointer-events:none}
+@media(max-width:480px){header{padding:11px 15px}.storepicker select{max-width:200px;font-size:13px}.brand{width:43px;height:43px}.cartmark{font-size:34px}}
+</style></head><body><header><div class="header-inner"><div class="brand" aria-label="Aislewise" title="Aislewise"><span class="cartmark" aria-hidden="true">🛒</span></div><div class="storepicker"><span class="store-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><select id="storeSelect" aria-label="Choose store" onchange="changeStore(this.value)"><option>Publix Riverside</option><option>Target CS NW</option><option>Target CS 441</option></select><svg class="store-chevron" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></header><main><div id="jsStatus" class="notice" style="margin-bottom:14px;background:#fff1ed;border-left-color:#d45b35">App is starting…</div><div id="storageWarning" class="notice" style="display:none;margin-bottom:14px">Browser storage is blocked here. Buttons can still work, but changes may not persist after closing this page. Open the downloaded file directly in a browser.</div><div class="tabs"><button id="tabPlan" onclick="tab('plan')">My list</button><button id="tabShop" class="secondary" onclick="tab('shop')">Route</button><button id="tabLayout" class="secondary" onclick="tab('layout')">Store layout</button></div><section id="plan"><div class="panel paste-panel"><h2>Paste your list</h2><textarea id="bulk" placeholder="Chicken breast&#10;Baby gold potatoes&#10;Broccoli&#10;Milk&#10;Goodles mac and cheese"></textarea><div class="actions"><button onclick="previewBulk()">Sort my list →</button></div><div id="pastePreview" class="section" style="display:none"></div></div><div id="importFeedback" class="muted" role="status" style="margin:8px 0"></div><div class="panel"><h2>Shopping list <span id="count" class="muted"></span></h2><div id="planItems"></div><div class="actions"><button onclick="tab('shop')">Start shopping →</button><button class="secondary" onclick="clearChecked()">Delete crossed-off items</button><button class="secondary" onclick="clearAll()">Delete all items</button></div></div></section><section id="shop"><div class="panel"><h2>Your route</h2><p id="progress"></p><div id="route"></div><div class="actions"><button class="secondary" onclick="resetChecks()">Uncheck all</button><button class="secondary" onclick="clearChecked()">Delete crossed-off items</button><button class="secondary" onclick="clearAll()">Delete all items</button><button class="secondary" onclick="tab('layout')">Edit aisle order</button></div></div></section><section id="layout"><div class="panel"><h2>Configure store layout</h2><div id="knownLocations"></div><div id="layoutRows"></div><div class="actions"><button onclick="resetLayout()" class="secondary">Reset default order</button><button onclick="tab('shop')">View route →</button></div></div><div class="panel"><h2>Unrecognized items</h2><div id="unknown"></div></div></section><div class="actions"><button class="secondary" onclick="exportData()">Export backup</button><button class="secondary" onclick="document.getElementById('importFile').click()">Import backup</button><input type="file" id="importFile" accept="application/json" hidden onchange="importData(event)"></div></main><script>
+const stores=['Publix Riverside','Target CS NW','Target CS 441'];
+const cats=['Produce','Bakery','Deli','Meat & Seafood','Breakfast & Coffee','Baking & Condiments','Pasta & Rice','Canned & Jarred','Snacks','Beverages','Dairy & Eggs','Frozen','Household','Pet Supplies','Personal Care','Other'];
+const defaults={'Produce':20,'Bakery':19,'Deli':20,'Meat & Seafood':20,'Breakfast & Coffee':2,'Baking & Condiments':5,'Pasta & Rice':6,'Canned & Jarred':3,'Snacks':12,'Beverages':11,'Dairy & Eggs':16,'Frozen':10,'Household':9,'Pet Supplies':7,'Personal Care':18,'Other':99};
+const words={
+'Produce':['kimchi','mandarin','banana','apple','fresh strawberries','strawberry','potato','onion','tomato','lettuce','fresh spinach','carrot','pepper','avocado','grape','blueberry','lemon','lime','garlic','mushroom','cucumber','fresh broccoli'],
+'Bakery':['sandwich bread','bread','bagel','bun','croissant','muffin'],
+'Deli':['deli','rotisserie','sliced turkey','cold cut','hummus','tzatziki'],
+'Meat & Seafood':['fresh chicken','chicken breast','beef','steak','ground turkey','pork','salmon','shrimp','mahi','fish','bacon','sausage'],
+'Breakfast & Coffee':['granola','cereal','oatmeal','oats','ground coffee','coffee','tea','pancake syrup','syrup','honey'],
+'Baking & Condiments':['flour','ketchup','olive oil','cooking oil','salad dressing','sugar','baking powder','seasoning','spice'],
+'Pasta & Rice':['orzo','pasta','spaghetti','goodles','rice','marinara','carbone','mac and cheese'],
+'Canned & Jarred':['black beans','enchilada sauce','green chiles','rotel','bean','salsa','broth','soup','canned','tomato sauce','peanut butter','jam','jelly'],
+'Snacks':['protein bar','protein bars','chip','cracker','cookie','oreo','popcorn','pretzel','chocolate','tru fru'],
+'Beverages':['soda','coca cola','coke','bottled water','water','juice','gatorade','protein shake','shamrock','sparkling'],
+'Dairy & Eggs':['sour cream','cream cheese','milk','egg','cheese','yogurt','butter','cream','mozzarella'],
+'Frozen':['frozen','ice cream','pizza','nuggets'],
+'Household':['detergent','paper towel','toilet paper','soap','dish soap','pam spray','cooking spray','trash bag','cleaner','aluminum foil','foil'],
+'Pet Supplies':['dog food','cat food','pet food'],
+'Personal Care':['shampoo','toothpaste','deodorant','conditioner']};
+// Product-specific observed locations; newest conflicting results take precedence but remain flagged.
+const observed=[
+['breakfast cereal','2'],['instant oatmeal','2'],['ground coffee','2'],['tea bags','2'],['pancake syrup','2'],
+['chicken broth','3'],['salad dressing','4'],['all purpose flour','5'],['all-purpose flour','5'],['ketchup','5'],['olive oil','5'],['spaghetti pasta','5'],
+['carbone marinara','6'],['carbon marinara','6'],['white rice','6'],['dog food','7'],
+['dish soap','9'],['laundry detergent','9'],['paper towels','9'],['toilet paper','9'],['aluminum foil','9'],
+['oreo','10'],['oreo cookies','10'],['bottled water','10'],['frozen chicken nuggets','10'],['frozen pizza','10'],
+['coca cola 12 pac','11'],['coca-cola 12-pack','11'],['frozen broccoli','11'],['lays chips','12'],['potato chips','12'],
+['canned black-eyed peas','13'],['ice cream','14'],['bagged spinach','14'],['shampoo','15'],
+['tortilla wraps','16'],['shredded mozzarella','16'],['greek yogurt','16'],['grape jelly','16'],['peanut butter','16'],
+['toothpaste','18'],['sandwich bread','19'],['whole milk','19'],['cottage cheese','19'],
+['deli sliced turkey','Deli'],['fresh chicken breast','Meat'],['bananas','Produce'],['fresh strawberries','Produce'],['eggs','Rear Left'],['canned tomato soup','Deli']
+];
+const exact=Object.fromEntries(observed);
+const conflicts=new Set(['frozen pizza','peanut butter']);
+// Concepts are for matching only: the shopper sees their original wording.
+const concepts=[
+['yogurt',['yoghurt','yogurt','greek yoghurt','greek yogurt'],'Dairy & Eggs','16'],
+['banana',['banana','bananas'],'Produce','Produce'],
+['salsa',['salsa','salsa verde'],'Canned & Jarred',null],
+['beef',['beef','ground beef','minced beef'],'Meat & Seafood','Meat'],
+['yellow onion',['yellow onion','yellow onions'],'Produce','Produce'],
+['shredded cheese',['shreddy chz','shreddy cheese','shredded chz','shredded cheese'],'Dairy & Eggs','16'],
+['chicken broth',['chicken broth','chicken stock'],'Canned & Jarred','3'],
+['sour cream',['sour cream'],'Dairy & Eggs',null],
+['milk',['milk','whole milk'],'Dairy & Eggs','19'],
+['mandarins',['mandarins','mandarin','mandarin oranges','clementines'],'Produce','Produce'],
+['cottage cheese',['cottage cheese'],'Dairy & Eggs','19'],
+['tortilla chips',['tortilla chips','corn tortilla chips'],'Snacks','12'],
+['tomatoes',['tomatoes','tomato','roma tomatoes','roma tomato'],'Produce','Produce'],
+['black beans',['black beans','canned black beans'],'Canned & Jarred',null],
+['eggs',['eggs','egg'],'Dairy & Eggs','Rear Left'],
+['chicken breast',['chicken breast','chicken breasts'],'Meat & Seafood','Meat'],
+['onion',['onion','onions'],'Produce','Produce'],
+['tortillas',['tortillas','tortilla','flour tortillas','corn tortillas','tortilla wraps','soft tortillas'],'Bakery',null],
+['cream cheese',['cream cheese','cream cheese block','cream cheese spread'],'Dairy & Eggs',null],
+['orzo',['orzo','orzo pasta'],'Pasta & Rice',null],
+['kimchi',['kimchi'],'Produce',null],
+['tzatziki',['tzatziki','tzatziki dip'],'Deli',null],
+['granola',['granola'],'Breakfast & Coffee',null],
+['protein bars',['protein bar','protein bars','protein bar pack'],'Snacks',null]
+];
+// Verified by shopper for Publix Riverside only. Other stores retain their previous provisional mapping.
+const confirmedPublix={
+'salsa':'3','salsa verde':'3','sour cream':'16','black beans':'5',
+'tortillas':'16','cream cheese':'16','orzo':'5','kimchi':'Produce',
+'tzatziki':'Deli','granola':'2','protein bars':'7'
+};
+const specialRank={'Produce':0,'Meat':20,'Deli':21,'Rear Left':22};
+let storageAvailable=true;function readSaved(k){try{return localStorage.getItem(k)}catch(e){storageAvailable=false;return null}}function writeSaved(k,v){try{localStorage.setItem(k,v)}catch(e){storageAvailable=false;showStorageWarning()}}function showStorageWarning(){const n=document.getElementById('storageWarning');if(n)n.style.display='block'}
+let data;try{data=JSON.parse(readSaved('aislewise-v2'))}catch{}
+if(!data){let old;try{old=JSON.parse(readSaved('aislewise-v1'))}catch{}data={store:'Publix Riverside',items:Array.isArray(old?.items)?old.items:[],layout:{...defaults},custom:old?.custom||{},overrides:{}}}
+data.items=Array.isArray(data.items)?data.items:[];data.store=stores.includes(data.store)?data.store:stores[0];data.layout={...defaults,...data.layout};data.overrides=data.overrides||{};data.custom=data.custom||{};
+let next=Math.max(Date.now(),...(data.items||[]).map(x=>Number(x.id)||0));
+function save(){writeSaved('aislewise-v2',JSON.stringify(data))}
+function changeStore(name){if(stores.includes(name)){data.store=name;save();render()}}
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()}
+function conceptFor(name){let k=norm(name);for(let [concept,aliases] of concepts)if(aliases.some(a=>norm(a)===k))return concept;return k}
+function conceptDef(name){let c=conceptFor(name);return concepts.find(x=>x[0]===c)}
+function category(name){let key=norm(name),def=conceptDef(name);if(data.custom[key])return data.custom[key];if(def)return def[2];if(key.includes('frozen'))return 'Frozen';for(let [c,terms] of Object.entries(words))if(terms.some(t=>key.includes(norm(t))))return c;return 'Other'}
+function aisleLocation(name){let key=norm(name),c=conceptFor(name),def=conceptDef(name);if(data.overrides[key]!==undefined)return String(data.overrides[key]);if(data.overrides[c]!==undefined)return String(data.overrides[c]);if(data.store==='Publix Riverside'){if(confirmedPublix[key]!==undefined)return confirmedPublix[key];if(confirmedPublix[c]!==undefined)return confirmedPublix[c]}if(exact[key]!==undefined)return exact[key];if(def&&def[3])return def[3];let cat=category(name);if(cat==='Other'||(def&&!def[3]))return 'Needs location';return String(data.layout[cat]??99)}
+function rank(loc){let n=Number(loc);return Number.isFinite(n)?n:(specialRank[loc]??98)}
+function parseLine(raw){let text=raw.trim().replace(/^[-*•\s]+/,'').replace(/^\d+[.)]\s+/,'').trim();if(!text)return null;
+ let quantity=null,unit=null;
+ let m=text.match(/^([0-9]+(?:\.[0-9]+)?)\s*(lbs?|pounds?|oz|kg|g)\s+(.+)$/i);
+ if(m){quantity=Number(m[1]);unit=m[2].toLowerCase();text=m[3]}
+ else if((m=text.match(/^(\d+)\s*(?:x\s*)?(.+)$/i))){quantity=Number(m[1]);text=m[2]}
+ else if((m=text.match(/^(.+?)\s*\(double\)\s*$/i))){quantity=2;text=m[1]}
+ else if((m=text.match(/^(.+?)\s*[x×]\s*(\d+)$/i))){quantity=Number(m[2]);text=m[1]}
+ text=text.trim();if(!text)return null;
+ return {name:text,concept:conceptFor(text),quantity,unit,checked:false};}
+function parseBulk(value){let chunks=value.split(/\r?\n|[,;]+/).map(parseLine).filter(Boolean),by=new Map();for(let i of chunks){let key=i.concept;if(!by.has(key)){by.set(key,{...i,duplicates:0});continue}let old=by.get(key);old.duplicates++;if(i.quantity!=null&&(old.quantity==null||i.quantity>old.quantity)){old.quantity=i.quantity;old.unit=i.unit;old.name=i.name}}return [...by.values()]}
+let pending=[];
+function previewBulk(){pending=parseBulk(document.getElementById('bulk').value);let box=document.getElementById('pastePreview');box.replaceChildren();box.style.display='block';if(!pending.length){box.append(el('p','','Paste a list first.'));return}
+ box.append(el('h3','',pending.length+' unique items found'));
+ let dup=pending.reduce((n,i)=>n+i.duplicates,0);box.append(el('p','muted',dup+' duplicate line(s) merged. Existing list items will also be merged.'));
+ for(let i of pending){let r=el('div','previewrow');let name=el('span','',i.name+(i.quantity!=null?' · '+i.quantity+(i.unit?' '+i.unit:''):''));r.append(name);r.append(el('span','pill',aisleLocation(i.concept)==='Needs location'?'Needs location':formatLoc(aisleLocation(i.concept))));box.append(r)}
+ let buttons=el('div','actions'),yes=el('button','','Add '+pending.length+' items');yes.onclick=commitBulk;let no=el('button','secondary','Cancel');no.onclick=()=>{box.style.display='none';pending=[]};buttons.append(yes,no);box.append(buttons)}
+function commitBulk(){let added=0;for(let i of pending){let old=data.items.find(x=>conceptFor(x.concept||x.name)===i.concept);if(old){if(i.quantity!=null&&(old.quantity==null||i.quantity>old.quantity)){old.quantity=i.quantity;old.unit=i.unit;old.name=i.name}}else{data.items.push({id:++next,name:i.name,concept:i.concept,quantity:i.quantity,unit:i.unit,checked:false});added++}}
+ document.getElementById('bulk').value='';document.getElementById('pastePreview').style.display='none';pending=[];save();render();document.getElementById('importFeedback').textContent=added+' new item(s) added; duplicates merged.'}
+function addBulk(){previewBulk()}
+function formatLoc(loc){return Number.isFinite(Number(loc))?'Aisle '+loc:loc}
+function example(){document.getElementById('bulk').value='Bananas\nBroccoli\nChicken breast\nBaby gold potatoes\nGoodles mac and cheese\nBlack beans\nSalsa verde\nMilk\nEggs\nCoffee\nPaper towels';addBulk()}
+function toggle(id){let x=data.items.find(i=>i.id===id);if(x)x.checked=!x.checked;save();render()}
+function removeItem(id){data.items=data.items.filter(i=>i.id!==id);save();render()}
+function clearChecked(){let count=data.items.filter(i=>i.checked).length;if(!count){alert('No crossed-off items to delete.');return}data.items=data.items.filter(i=>!i.checked);save();render()}
+function clearAll(){if(!data.items.length){alert('Your shopping list is already empty.');return}if(confirm('Delete all '+data.items.length+' items from your shopping list? This cannot be undone.')){data.items=[];save();render()}}
+function resetChecks(){data.items.forEach(i=>i.checked=false);save();render()}
+function tab(name){for(let n of ['plan','shop','layout']){document.getElementById(n).style.display=n===name?'block':'none';document.getElementById('tab'+n[0].toUpperCase()+n.slice(1)).className=n===name?'':'secondary'}render()}
+function el(tag,cls,text){let x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x}
+function itemNode(i){let row=el('div','item'),check=el('input');check.type='checkbox';check.checked=i.checked;check.onchange=()=>toggle(i.id);row.append(check);let body=el('div','name'+(i.checked?' done':''));body.append(el('div','',i.name+(i.quantity!=null?' · '+i.quantity+(i.unit?' '+i.unit:''):'')));body.append(el('div','locationhint','Location: '+formatLoc(aisleLocation(i.concept||i.name))+(conflicts.has(norm(i.name))?' · Verify conflicting results':'')));row.append(body);let del=el('button','','×');del.title='Remove item';del.onclick=()=>removeItem(i.id);row.append(del);return row}
+function render(){document.getElementById('storeSelect').value=data.store;document.getElementById('count').textContent='('+data.items.length+')';let list=document.getElementById('planItems');list.replaceChildren();if(!data.items.length)list.append(el('div','','Your list is empty. Add a few groceries above.'));data.items.forEach(i=>list.append(itemNode(i)));
+let route=document.getElementById('route');route.replaceChildren();let sorted=[...data.items].sort((a,b)=>Number(a.checked)-Number(b.checked)||rank(aisleLocation(a.concept||a.name))-rank(aisleLocation(b.concept||b.name))||a.name.localeCompare(b.name));let sections=new Map();for(let i of sorted){let loc=i.checked?'Picked up':aisleLocation(i.concept||i.name);if(!sections.has(loc))sections.set(loc,[]);sections.get(loc).push(i)}for(let [loc,items] of sections){let sec=el('div','section'),h=el('h3','',loc==='Picked up'?'✓ Picked up':Number.isFinite(Number(loc))?'AISLE '+loc:loc.toUpperCase());sec.append(h);items.forEach(i=>sec.append(itemNode(i)));route.append(sec)}let done=data.items.filter(i=>i.checked).length;document.getElementById('progress').textContent=done+' of '+data.items.length+' picked up'+(data.items.length&&done===data.items.length?' — All done! 🎉':'');
+let layout=document.getElementById('layoutRows');layout.replaceChildren();for(let c of cats){let r=el('div','layoutrow');r.append(el('span','',c));let inp=el('input');inp.type='number';inp.step='1';inp.min='0';inp.value=data.layout[c];inp.setAttribute('aria-label',c+' default aisle');inp.onchange=()=>{let v=Number(inp.value);if(Number.isFinite(v)&&v>=0){data.layout[c]=v;save();render()}};r.append(inp);layout.append(r)}
+let known=document.getElementById('knownLocations');known.replaceChildren();known.append(el('h3','','Observed store locations'));if(data.store==='Publix Riverside'){let confirmed=el('div','location-table');confirmed.append(el('strong','','Your confirmed Publix Riverside locations: '));confirmed.append(document.createTextNode(Object.entries(confirmedPublix).map(([name,loc])=>name+' → '+formatLoc(loc)).join(' · ')));known.append(confirmed)}let summary=el('div','location-table');let by=new Map();for(let [product,loc] of observed){if(!by.has(loc))by.set(loc,[]);by.get(loc).push(product)}for(let [loc,products] of [...by].sort((a,b)=>rank(a[0])-rank(b[0]))){let r=el('div','');r.append(el('strong','',Number.isFinite(Number(loc))?'Aisle '+loc+': ':loc+': '));r.append(document.createTextNode(products.join(', ')));summary.append(r)}known.append(summary);
+let unknown=document.getElementById('unknown');unknown.replaceChildren();let seen=[...new Set(data.items.filter(i=>category(i.name)==='Other').map(i=>i.name))];if(!seen.length)unknown.append(el('p','muted','No unrecognized items.'));for(let name of seen){let r=el('div','layoutrow');r.append(el('span','',name));let select=el('select');for(let c of cats){let o=el('option','',c);o.value=c;select.append(o)}select.value='Other';select.onchange=()=>{data.custom[norm(name)]=select.value;save();render()};r.append(select);unknown.append(r)}}
+function resetLayout(){if(confirm('Reset category aisle defaults?')){data.layout={...defaults};save();render()}}
+function exportData(){save();let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='aislewise-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function importData(e){let file=e.target.files[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);if(!Array.isArray(d.items)||!d.layout||typeof d.layout!=='object')throw Error();data={store:stores.includes(d.store)?d.store:stores[0],items:d.items.filter(i=>typeof i.name==='string').map(i=>({id:++next,name:i.name,concept:i.concept||conceptFor(i.name),quantity:i.quantity??null,unit:i.unit||null,checked:!!i.checked})),layout:{...defaults,...d.layout},custom:d.custom||{},overrides:d.overrides||{}};save();render();alert('Backup imported')}catch{alert('Invalid Aislewise backup')}};reader.readAsText(file);e.target.value=''}
+document.getElementById('jsStatus').style.display='none';if(!storageAvailable)showStorageWarning();render();
+</script></body></html>
